@@ -17,7 +17,7 @@ class DisplayListLayoutDesktop extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: FractionalOffset.center,
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      //  padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
@@ -55,28 +55,47 @@ class DisplayListLayoutDesktop extends StatelessWidget {
               SvgPicture.asset(images[0]),
             ],
           ),
-          const SizedBox(height: 200),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          SvgPicture.asset('assets/arrow_1.svg', height: 200),
+          Stack(
+            alignment: Alignment.center,
             children: [
-              SvgPicture.asset(images[1]),
-              SizedBox(width: 60),
-              const Text(
-                '2.',
-                style: TextStyle(
-                  fontSize: 130,
-                  color: Color(0XFF718096),
+              ClipPath(
+                clipper: CurveClipper(),
+                child: Container(
+                  height: 370.0,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0XFFEBF4FF),
+                        Color(0XFFE6FFFA),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              Text(
-                texts[1],
-                style: const TextStyle(
-                  color: Color(0XFF718096),
-                ),
-              )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(images[1]),
+                  SizedBox(width: 60),
+                  const Text(
+                    '2.',
+                    style: TextStyle(
+                      fontSize: 130,
+                      color: Color(0XFF718096),
+                    ),
+                  ),
+                  Text(
+                    texts[1],
+                    style: const TextStyle(
+                      color: Color(0XFF718096),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 200),
+          SvgPicture.asset('assets/arrow_2.svg', height: 200),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -101,4 +120,34 @@ class DisplayListLayoutDesktop extends StatelessWidget {
       ),
     );
   }
+}
+
+class CurveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    int curveHeight = 40;
+    Offset controlPoint1 = Offset(300, size.height - curveHeight);
+    Offset endPoint = Offset(size.width, size.height - curveHeight);
+
+    Path path = Path()
+      ..lineTo(0, size.height)
+      ..lineTo(controlPoint1.dx, size.height)
+      ..quadraticBezierTo(
+          controlPoint1.dx, size.height, size.width / 2, size.height - 50)
+      ..quadraticBezierTo(
+          size.width / 2, size.height - 50, size.width / 2, size.height - 50)
+      ..arcToPoint(Offset(size.width / 2 + 300, size.height - 38),
+          largeArc: true)
+      ..quadraticBezierTo(
+          size.width / 2 + 300, size.height - 38, size.width, 250)
+      ..lineTo(size.width, 70)
+      ..arcToPoint(Offset(size.width - 300, 20), clockwise: false)
+      ..arcToPoint(Offset(size.width / 2, 50), largeArc: true)
+      ..close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
